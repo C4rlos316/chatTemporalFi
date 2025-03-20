@@ -1,78 +1,181 @@
-﻿**Carlos Mario Hernández Gutiérrez** 
+# Laboratorio 1: Imágenes Docker
 
-Celular: 55 3596 1143 | Correo: cama619@gmail.com Edad: 27 años | Ubicación: México 
+## Procedimiento
 
-**Perfil Profesional** 
+### 1. Crear repositorio
 
-Desarrollador con experiencia en diseño y desarrollo de aplicaciones móviles. Conocimientos  en  tecnologías  como  Firebase,  Kotlin  y  APIs  de  terceros (Facebook,  Google  Maps,  PayPal).  Experiencia  en  frontend  y  backend  con enfoque en optimizar la experiencia del usuario y garantizar la funcionalidad. Apasionado  por  aprender  y  aplicar  nuevas  tecnologías  en  proyectos innovadores. Actualmente cursando Ingeniería en Computación en la UNAM. 
+Clonamos nuestro repositorio
 
-**Formación** 
+![](./images/1.png)
 
-**Ingeniería en Sistemas Computacionales** – Universidad Nacional Autónoma de México (UNAM), 2022 
+### 2. Crear contenido web
 
-**Certificaciones o Cursos**  
+Para crear nuestro archivo, usamos el comando
 
-**Google Cloud** 
+```bash
+git touch index.html
+```
 
-- Build and Secure Networks in Google Cloud – Google Cloud Skills Boosts 
-- Google Cloud Computing Foundations:– Google Cloud Skills Boosts  
-- Google Cloud Computing: Networking & Security - Google Cloud Skills Boosts 
+![](./images/2.png)
 
-**BackEnd y Bases de Datos** 
+La estructura es la siguiente:
 
-- Formacion BackEnd - Alura 
-- Relational Database system- Coursera 
+**index.html**
 
-**Desarrollo Movil**  
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<title>Bienvenido a Apache</title>
+</head>
+<body>
+<h1>¡Hola desde el servidor HTTP Apache!</h1>
+<p>Esto se sirve desde un Docker Contenedor.</p>
+</body>
+</html>
+```
 
-- Programación de Android desde Cero – Udemy  
-- Fundamentos de programación en Java. Bases de la informática - Udemy 
-- Introducción al desarrollo de apps para Android - Udemy 
-- The Complete Android N Developer Course – Udemy 
-- Curso Completo Python 3 - Desde las Bases hasta Django  -Udemy 
-- Android y Kotlin Desde Cero a Profesional - Udemy 
-- Experto en Firebase para Android - Udemy  
+![](./images/3.png)
 
-**Experiencia**  
+### 3. Crear Dockerfile
 
-**Aplicación “A&F” (2021)** 
+Creamos el Dockerfile con el comando:
 
-- Diseñé interfaces de usuario intuitivas y conecté elementos interactivos. 
-- Implementé funcionalidades backend, como carga y descarga de archivos (imágenes, videos, PDFs). 
-- Integré APIs (PayPal, Facebook, Firebase) para manejo de pagos, almacenamiento y autenticación. 
-- Supervisé  el  funcionamiento  correcto  del  chat  entre  usuarios  y  administradores. **Tecnologías usadas**: Android Studio, API PayPal, Firebase, GitHub. 
+```bash
+git touch Dockerfile
+```
 
-**Aplicación “Relpers” (2020)** 
+![](./images/4.png)
 
-- Desarrollé frontend y backend, integrando notificaciones push y gestión de datos del usuario. 
-- Utilicé APIs de terceros (PayPal, Facebook) y gestioné almacenamiento en la nube con Firebase. 
+Para la versión de Apache, obtuve los datos del siguiente enlace:
 
-  **Tecnologías usadas**: Android Studio, CloudStorage, GitHub. 
+Referencia: https://hub.docker.com/_/httpd
 
-**Aplicación “Beauty Express” (2020)** 
+Donde la versión actual es `httpd:2.4`
 
-- Diseñé interfaces móviles con integración de APIs como Google Maps y PayPal. 
-- Implementé  sistemas  de  notificaciones  push  y  funciones  de  almacenamiento  en Firebase. 
+**Dockerfile**
 
-  **Tecnologías usadas**: Android Studio, Picasso, Firebase. 
+```Dockerfile
+FROM httpd:2.4
+COPY index.html /usr/local/apache2/htdocs/
+EXPOSE 80
 
-**Aplicación “MED910” (2019)** 
+```
 
-- Conecté aplicaciones móviles con bases de datos en Firebase y APIs (Google Maps, Facebook). 
-- Diseñé  pantallas  interactivas  y  optimizadas  para  diferentes  dispositivos  móviles. **Tecnologías usadas**: Android Studio, Firebase. 
+![](./images/5.png)
 
-**Aplicación “MY BIKE” (2019)** 
+#### Crear una imagen de Apache personalizada
 
-- Diseñé  y  conecté  pantallas  con  elementos  visuales  en  Android  Studio. **Tecnologías usadas**: Android Studio. 
+Crea la imagen usando los siguientes parámetros:
+- Nombre de la imagen: `custom-apache`. - Etiqueta: `1.0.0`
 
-**Conocimientos técnicos** 
+```bash
+docker build -t custom-apache:1.0.0 .
+```
 
-- **Lenguajes de Programación**: Java, Kotlin, Python. 
-- **Herramientas y Tecnologías**: Android Studio, Firebase, GitHub, CloudStorage. 
-- **APIs**: Google Maps, PayPal, Facebook, Picasso. 
-- **Backend**: Django, Bases de datos relacionales. 
-- **Cloud Computing**: Google Cloud Platform (Networking, Infrastructure). 
+![](./images/6.png)
 
-**Idiomas** 
+### 4. Ejecutar contenedor personalizado
 
-- **Inglés**: Básico (escrito y hablado). 
+Ejecute un contenedor usando la imagen personalizada.
+- Asigne el nombre del contenedor a `apache-container` .
+- Asigne el puerto expuesto del contenedor a `8080` en el equipo host.
+
+```bash
+docker run -d --name apache-container -p 8080:80 custom-apache:1.0.0
+```
+
+![](./images/7.png)
+
+#### Ver registros del contenedor
+
+Ver contenedor
+
+```bash
+docker ps
+```
+
+![](./images/8.png)
+
+Seguimiento de los registros en tiempo real:
+
+```bash
+docker logs -f apache-container
+```
+
+![](./images/9.png)
+
+Acceso desde el navegador: http://localhost:8080
+
+![](./images/10.png)
+
+### 5. Imagen de Apache precompilada
+
+Obtenga la imagen oficial del servidor HTTP Apache de Docker Hub.
+
+Para esta parte, al consultar la página oficial de la imagen, la versión más reciente es la 2.4.63. Sin embargo, al investigar, vi que si incluyo la versión 2.4 en el comando, se descargará la versión más reciente.
+
+```bash
+docker pull httpd:2.4
+```
+
+![](./images/11.png)
+
+#### Ejecutar el contenedor oficial de la imagen de Apache
+
+- Establezca el nombre del contenedor como `apache-default`.
+- Asignar el puerto expuesto del contenedor a `9090` en el equipo host.
+
+```bash
+docker run -d --name apache-default -p 9090:80 httpd:2.4
+```
+
+![](./images/12.png)
+
+Acceso en el navegador: http://localhost:9090
+
+![](./images/13.png)
+
+#### Detenga y elimine el contenedor una vez verificado.
+
+```bash
+docker stop apache-default
+docker rm apache-default
+```
+
+![](./images/14.png)
+
+### 6. Limpieza
+
+- Detenga y elimine el contenedor Apache personalizado.
+
+```bash
+docker stop apache-container
+docker rm apache-container
+
+```
+
+![](./images/15.png)
+
+- Elimine la imagen personalizada de su equipo local.
+
+```bash
+docker rmi custom-apache:1.0.0
+```
+
+![](./images/16.png)
+
+### 7. Subir archivos
+
+```bash
+git add .
+git commit -m "feat(LAB1-DOCKER): implementar flujo de trabajo personalizado de imagen Docker de Apache"
+
+```
+
+![](./images/17.png)
+
+## Referencias
+
+- [Imagen oficial de Docker de Apache - Docker Hub](https://hub.docker.com/_/httpd)
+- [Documentación de Docker](https://docs.docker.com/)
