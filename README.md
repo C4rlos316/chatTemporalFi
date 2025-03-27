@@ -42,7 +42,7 @@ Launch a **Redis** container with the following parameters:
 
 The following command is used, which was very similar to the one seen in class with the difference that we only added the name of the volume and the directory for persistence after the -v flag.
 
-    ```bash
+   ```bash
    docker run -d --name redis-server -p 6379:6379 -v redis-data:/data  redis:7.4.2-alpine3.21
    ```
 
@@ -146,7 +146,7 @@ Launch a MongoDB container with the following parameters
     - Use the directory created previously to bind to the data directory inside the container: `/data/db`
     - Map the container's default MongoDB port `( 27017)` to the host.
 
-    ```bash
+   ```bash
    docker run -d --name mongodb-server -p 27017:27017 -v /opt/mongo-data:/data/db  mongo:8.0.4
    ```
 
